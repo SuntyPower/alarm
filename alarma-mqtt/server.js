@@ -53,6 +53,9 @@ server.on('published', async (packet, client) => {
 }
 })
 
+socket.on('report',socket => {
+  console.log("EL SOCKETE",socket)
+})
 
 
 server.on('ready', async () => {

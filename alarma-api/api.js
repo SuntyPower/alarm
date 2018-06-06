@@ -96,8 +96,8 @@ res.status(201).json({
 })
 
 api.get('/createReport/:uuid/:triggered/:zone/:type', async(req,res)=>{
-  const triggered = req.params.triggered
-  const zone = req.params.zone
+  const triggered = req.params.triggered === '1' ? 1 : 0
+  const zone = Number(req.params.zone)
   const type = req.params.type
   const uuid = req.params.uuid
   console.log("GGGGGGGGGGGG",triggered, uuid, type, zone)
@@ -110,7 +110,10 @@ api.get('/createReport/:uuid/:triggered/:zone/:type', async(req,res)=>{
     }
    ).catch((err) => {
     res.send("MAL")
-  })  
+  })
+  report.triggered = report.triggered ? 1 : 0
+  console.log('TRIGEREED\n\n\n',report)
+  res.status(200).send(report)
   })
 
 

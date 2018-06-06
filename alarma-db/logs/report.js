@@ -53,15 +53,14 @@ module.exports = function setupReport (DeviceModel , ReportModel) {
         console.log("DISPOSITIVO ",device.id);
         Object.assign(report, { deviceId: device.id })
         const result = await ReportModel.create(report)
-        console.log(result.toJSON)
         return result.toJSON()
       }
     }
 
         async function findAll () {
         return ReportModel.findAll({
-          limit: 5,
-          order: [['createdAt', 'DESC']]
+          order: [['createdAt', 'DESC']],
+          raw: true
         })
       }
 

@@ -62,10 +62,14 @@ if (!module.parent) {
 io.on('connection', (socket)=>{
   console.log('SOCKET CONNECTION: ')
   socket.on('sensor/motion',(socket) =>{
-    console.log('\n\n\n\n\n\n FUCK');
-    console.log(socket);
+    console.log('\n\n\n\n\n\n FUCK')
+    console.log(socket)
     trae.get(`createReport/${socket.device.uuid}/${socket.report.triggered}/${socket.report.zone}/${socket.report.type}`)
-    io.emit('report',socket)
+      .then((res) =>{
+        io.emit('report', res.data)
+        console.log("se envio el socket con la data: ", res.data)
+      })
+      .catch((err) => {console.log(err)})
   })
 })
 

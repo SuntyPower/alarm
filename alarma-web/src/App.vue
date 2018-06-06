@@ -8,10 +8,8 @@
 <script>
 import alarmHeader from '@/components/layout/Header.vue'
 import alarmFooter from '@/components/layout/Footer.vue'
-
 export default {
   name: 'app',
-
   components: {
     alarmFooter,
     alarmHeader

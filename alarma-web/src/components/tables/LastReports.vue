@@ -1,11 +1,10 @@
 
 <template lang="pug">
-
 #reports
   .container
-    div(v-for="a in reports")
+    div(v-for="a in alerts")
       notifiaction-report(
-        :sensor="a.sensor",
+        :sensor="a.type",
         :zone="a.zone",
         :timeAgo="a.createdAt",
         :triggered="a.triggered"
@@ -17,7 +16,7 @@
           th.is-info(title="zona del sensor") ZONA
           th.is-info(title="deteccion de movimiento") REPORTE
           th.is-info(title="tipo de sensor") SENSOR
-      tbody(v-for="r in reports")
+      tbody(v-for="r in getLastReports")
         tr
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.createdAt | moment("from", now )}}
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.zone| getZone | toUpperCase}}
@@ -25,92 +24,80 @@
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.type | toUpperCase}}
 </template>
 <script>
-import reportsService from '../../services/reports.js'
+// import reportsService from '../../services/reports.js'
 import notifiactionReport from '@/components/cards/Report.vue'
-import socket from 'socket.io-client'
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex'
 export default {
   components: {
     notifiactionReport
   },
-  name: "reports",
+  name: 'reports',
   data () {
     return {
-      reports: [],
-      alerts: [],
-      now: {},
-      danger: 'is-danger',
-      okay: 'is-success'
+        alerts: [],
+        danger: 'is-danger',
+        okay: 'is-success'
     }
   },
-  sockets:{
-     connect () {
-       console.log('connected')
-     },
-     report (socket) {
-       console.log(socket)
-       this.reports.push(socket.device)
-     }
-   },
-
-  created() {
+  sockets: {
+    connect () {
+      console.log('connected')
+      console.log('Se conecto')
+    },
+    report (socket) {
+      this.alerts.push(socket)
+      this.addReports(socket)
+    }
+  },
+  created () {
     this.getReports()
   },
+  computed: {
+    ...mapState(['now']),
+    ...mapGetters(['getLastReports'])
+   },
 
-  mounted() {
-    this.now = new Date()
-    setInterval(()=>{
-      this.getReports()
-      this.now = new Date()
-    },5000)
 
-  },
   filters: {
     toUpperCase: function (str) {
-        return str.toUpperCase()
+      return str.toUpperCase()
     },
-    getZone: function (zone) {
+
+    getZone (zone) {
       switch (zone) {
         case 0:
           return 'COCINA'
-          break;
+          break
         case 1:
-          return 'DORMITORIo'
-          break;
+          return 'DORMITORIO'
+          break
         case 2:
           return 'PATIO'
         default:
           return 'CASA'
+        }
+    },
+
+    getReport: function (report) {
+      switch (report) {
+        case 0:
+          return 'SIN MOVIMIENTO'
+          break
+        case 1:
+          return 'MOVIMIENTO DETECTADO'
+        case 2:
+          return 'MOVIMIENTO DETECTADO'
+        default:
+          return ' '
+      }
     }
   },
-  getReport: function (report) {
-    switch (report) {
-      case 0:
-        return 'SIN MOVIMIENTO'
-        break;
-      case 1:
-        return 'MOVIMIENTO DETECTADO'
-      case 2:
-        return 'MOVIMIENTO DETECTADO'
-      default:
-
+    methods: {
+      ...mapActions(['getReports']),
+      ...mapMutations(['addReports'])
     }
   }
-},
 
-methods: {
-  getReports () {
-    reportsService.search()
-      .then(res =>{
-        this.reports= res
-      })
-  }
-},
-sockets: {
-  connect () {
-    console.log("conectado")
-  }
-}
-}
 </script>
 
 <style lang="scss" scoped>
