@@ -5,14 +5,12 @@ const registerService = {}
 registerService.register = function ({
   firstName,
   lastName,
-  username,
   email,
   password
 }) {
-  return apiService.post('/createUser',{
+  return apiService.post('/auth/register', {
     firstName,
     lastName,
-    username,
     email,
     password
   })

@@ -4,18 +4,18 @@ import reportsService from '@/services/reports'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-  //variables globales
+  // variables globales
   state: {
     reports: [],
     devices: [],
-    now: new Date,
+    now: new Date(),
     test: true
   },
-  //funciones
+  // funciones
   mutations: {
-    addReports (state, payload){
-      state.reports.splice(0,0,payload)
-    },
+    // addReports (state, payload) {
+    //   state.reports.splice(0, 0, payload)
+    // },
     setReports (state, payload) {
       state.reports = payload
     },
@@ -26,14 +26,14 @@ const store = new Vuex.Store({
 
   getters: {
     getLastReports (state) {
-      return state.reports.slice(0,5)
+      return state.reports.slice(0, 5)
     }
   },
   actions: {
     getReports (context) {
-      return reportsService.search({uuid: "1234"})
+        return reportsService.search({uuid: '1234'})
         .then((res) => {
-          context.commit('setReports',res)
+          context.commit('setReports', res.reports)
         })
     }
   }

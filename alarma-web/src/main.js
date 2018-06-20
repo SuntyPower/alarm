@@ -12,6 +12,9 @@ import store from '@/store'
 // SOCKET
 import VueSocketio from 'vue-socket.io'
 
+// LOCAL STORAGE
+import VueLocalStorage from 'vue-localstorage'
+
 
 // MOMENT
 import VueMoment from 'vue-moment'
@@ -23,9 +26,18 @@ const router = new VueRouter({
   linkExactActiveClass: 'is-active' // active class for *exact* links.
 })
 
+// router.beforeEach((to, from , next) => {
+//   // resolver si el usuario esta logueado
+//   if (!to.meta.isPublic && !isAuthenticated()) {
+//     return next('login')
+//   }
+//   next()
+// })
+
 Vue.use(VueRouter)
 Vue.use(VueMoment)
 Vue.use(VueSocketio, 'http://localhost:4000')
+Vue.use(VueLocalStorage)
 
 new Vue({
   el: '#app',

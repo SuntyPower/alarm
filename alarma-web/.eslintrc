@@ -1,0 +1,13 @@
+{
+  "extends": "standard",
+
+  "rules": {
+    "no-new": 0,
+    "no-multiple-empty-lines": 0,
+    "imports/order": 0,
+    "indent": 0,
+    "no-unreachable": 0
+    },
+
+    "plugins": ['html']
+}

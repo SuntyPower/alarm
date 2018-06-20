@@ -6,22 +6,26 @@ const routes = [
   {
     path: '/login',
     component: Login,
-    name: 'login'
+    name: 'login',
+    meta: { isPublic: true }
   },
   {
     path: '/reports',
     component: LastReports,
-    name: 'reports'
+    name: 'reports',
+    meta: { isPublic: true }
   },
   {
     path: '/register',
     component: Register,
-    name: 'register'
+    name: 'register',
+    meta: { isPublic: true }
   },
   {
     path: '/profile',
     component: Profile,
-    name: 'profile'
+    name: 'profile',
+    meta: { isPublic: true }
   }
 ]
 

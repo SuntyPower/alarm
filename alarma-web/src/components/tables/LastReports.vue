@@ -79,17 +79,9 @@ export default {
     },
 
     getReport: function (report) {
-      switch (report) {
-        case 0:
-          return 'SIN MOVIMIENTO'
-          break
-        case 1:
-          return 'MOVIMIENTO DETECTADO'
-        case 2:
-          return 'MOVIMIENTO DETECTADO'
-        default:
-          return ' '
-      }
+      if (report) {
+        return 'MOVIMIENTO'
+      } else return 'SIN MOVIMIENTO'
     }
   },
     methods: {

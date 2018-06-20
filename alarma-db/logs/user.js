@@ -22,11 +22,23 @@ module.exports = function setupUser (UserModel) {
     return user
   }
 
+  // devuelve True si el usuario ya esta en uso
+  async function checkNewUser(email) {
+    const user = await UserModel.findOne({
+      where:{
+          email: email
+      }
+    }).catch((err) => {
+      console.log(err)
+      return false
+      })
+    return user ? true : false
+  }
 
   return {
     create,
     findAll,
-    findByUsername
-
+    findByUsername,
+    checkNewUser
   }
 }

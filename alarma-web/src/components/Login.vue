@@ -1,40 +1,60 @@
 <template lang="pug">
   section.hero.is-success.is-fullheight
         .hero-body
-          .container.has-text-centered
+          .container.has-text-centered(v-show="!sucess")
             .column.is-4.is-offset-4
               h3.title.has-text-grey Iniciar Sesión
               p.subtitle.has-text-grey Ingrese su Usuario y Contraseña
               .box
                 figure.avatar
                   img(src='https://placehold.it/128x128')
-                form
                   .field
                     .control
-                      input.input.is-large(type='text', placeholder='Usuario o Email', autofocus='')
+                      input.input.is-large(type='text', placeholder='Email', v-model="email")
                   .field
                     .control
-                      input.input.is-large(type='password', placeholder='Su Contraseña')
+                      input.input.is-large(type='password', placeholder='Su Contraseña', v-model="password")
                   .field
                     label.checkbox
                       input(type='checkbox')
                       |                   Recuerdame
-                  button.button.is-block.is-info.is-large.is-fullwidth Iniciar Sesión
-              p.has-text-grey
-                a(href='/') Registrarse
-                |   · 
-                a(href='/') Olvidaste tu contraseña?
-                |   · 
-                a(href='/') Ayuda
+                  button.button.is-primary(v-on:click="login") Login
+              //- p.has-text-grey
+              //-   a(href='/') Registrarse
+              //-   |   · 
+              //-   a(href='/') Olvidaste tu contraseña?
+              //-   |   · 
+              //-   a(href='/') Ayuda
+        .container(v-show="sucess")
+            p  dagad{{message}}
 </template>
 <script>
+import loginServices from '@/services/login.js'
 export default {
   data () {
     return {
+      email: null,
+      password: null,
+      sucess: false,
+      message: null
+    }
+  },
+  methods: {
+    login () {
+      loginServices.login({
+        email: this.email,
+        password: this.password
+      })
+        .then(res => {
+          this.message = res
+          this.sucess = true
+          window.localStorage.token = res.token
+          window.localStorage.user = window.atob(res.token.split('.')[1])
 
+          this.$router.push('/reports')
+        })
     }
   }
-
 }
 </script>
 <style lang="scss" scoped>

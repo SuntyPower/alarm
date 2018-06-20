@@ -12,10 +12,6 @@
         .control
           input.input(type="text" placeholder="Apellido" v-model="lastName")
       .field
-        .label Nombre de Usuario *
-        .control
-          input.input(type="text" placeholder="Usuario" v-model="username")
-      .field
         .label email *
         .control
           input.input(type="email" placeholder="email" v-model="email")
@@ -29,36 +25,36 @@
           input.input(type="password" placeholder="confirmar contraseña" v-model="confirmPassword")
       button.button.is-primary(@click="checkForm") Registrarse
     .container(v-show="sucess")
-      p.title.is-success {{apiResponse.message}}
+        | Guardado con exito {{token}}
 </template>
 <script>
-import registerService from '../../services/register.js'
+import registerService from '@/services/register.js'
 
 export default {
-  name: "register",
+  name: 'register',
   data () {
     return {
       firstName: null,
       lastName: null,
-      username: null,
       email: null,
       password: null,
       confirmPassword: null,
       sucess: false,
       errors: [],
-      apiResponse: ''
+      user: '',
+      local: null
     }
   },
   methods: {
     checkForm () {
       this.errors = []
-      if (!this.firstName || !this.lastName || !this.username || !this.email || !this.password || !this.confirmPassword) {
+      if (!this.firstName || !this.lastName || !this.email || !this.password || !this.confirmPassword) {
         this.errors.push('Debe completar todos los campos obligatorios (*)')
       }
-      if (this.password != this.confirmPassword) {
+      if (this.password !== this.confirmPassword) {
         this.errors.push('Las contraseñas no son iguales')
       }
-      if (this.errors.length == 0) {
+      if (this.errors.length === 0) {
         this.postRegister()
       }
     },
@@ -67,13 +63,15 @@ export default {
       registerService.register({
         firstName: this.firstName,
         lastName: this.lastName,
-        username: this.username,
         email: this.email,
         password: this.password
       })
         .then(res => {
           this.sucess = true
-          this.apiResponse = res      
+          console.log(res)
+          this.user = res.token
+          window.localStorage.setItem('user', JSON.stringify(res))
+          this.local = JSON.parse(window.localStorage.getItem('user'))
         })
     }
   }
