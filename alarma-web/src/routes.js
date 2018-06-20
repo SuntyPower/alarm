@@ -2,6 +2,7 @@ import Login from '@/components/Login.vue'
 import LastReports from '@/components/tables/LastReports.vue'
 import Register from '@/components/forms/Register.vue'
 import Profile from '@/components/Profile.vue'
+import Device from '@/components/cards/Device.vue'
 const routes = [
   {
     path: '/login',
@@ -12,8 +13,7 @@ const routes = [
   {
     path: '/reports',
     component: LastReports,
-    name: 'reports',
-    meta: { isPublic: true }
+    name: 'reports'
   },
   {
     path: '/register',
@@ -24,8 +24,12 @@ const routes = [
   {
     path: '/profile',
     component: Profile,
-    name: 'profile',
-    meta: { isPublic: true }
+    name: 'profile'
+  },
+  {
+    path: '/devices',
+    component: Device,
+    name: 'device'
   }
 ]
 

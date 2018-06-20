@@ -2,8 +2,8 @@ import apiService from './api'
 
 const reportsService = {}
 
-reportsService.search = function (uuid) {
-  return apiService.get('/devices/5b2a192ccefe294e12e366ca/reports')
+reportsService.search = function (_id) {
+  return apiService.get(`/devices/${_id}/reports`)
     .then(res => res.data)
 }
 

@@ -31,7 +31,10 @@ const store = new Vuex.Store({
   },
   actions: {
     getReports (context) {
-        return reportsService.search({uuid: '1234'})
+        const user = JSON.parse(window.localStorage.user).user
+        const _id = user.devices[0]
+        console.log(user)
+        return reportsService.search(_id)
         .then((res) => {
           context.commit('setReports', res.reports)
         })

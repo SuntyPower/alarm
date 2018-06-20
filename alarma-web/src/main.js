@@ -25,14 +25,29 @@ const router = new VueRouter({
   linkActiveClass: 'is-active', // active class for non-exact links.
   linkExactActiveClass: 'is-active' // active class for *exact* links.
 })
+const isAuthenticated = function () {
+  return window.localStorage.token
+}
 
-// router.beforeEach((to, from , next) => {
-//   // resolver si el usuario esta logueado
-//   if (!to.meta.isPublic && !isAuthenticated()) {
-//     return next('login')
-//   }
-//   next()
-// })
+router.beforeEach((to, from, next) => {
+  // resolver si el usuario esta logueado
+  if (!to.meta.isPublic && !isAuthenticated()) {
+      return next({
+      name: 'login'
+    })
+  }
+  if (to.name === 'login' && isAuthenticated()) {
+    return next({
+      name: 'profile'
+    })
+  }
+  if (to.name === 'register' && isAuthenticated()) {
+    return next({
+      name: 'profile'
+    })
+  }
+  return next()
+})
 
 Vue.use(VueRouter)
 Vue.use(VueMoment)
