@@ -4,43 +4,30 @@ Servidor de la API de Nervans
 
 ### Requisitos
 
-Necesita node y npm, base de datos mysql
+Necesita node y npm, base de datos mongodb y redis
 
-
-### Instalacion
-
- Ubuntu, Debian
-
-Instalacion nodejs y npm
-```
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-
-npm install -y nodejs
-```
-Instalacion mysql
-
-```
-sudo apt-get update
-sudo apt-get install mysql-server
-
-```
-Para la parte de mqtt usamos Redis como base de datos y mosca
 
 ## API
 
 Todos los comandos disponibles de la API
 
 
-Post request
+Device api calls
 
 ```
+ GET /api/devices find all devices from the current user
+ GET /api/devices/:id find device by id
+ GET /api/devices/:id/reports find all reports from the device with :id
+ GET /api/devices/:id/lastReports return last 10 reports from device :id
+ GET /api/devices/:id/zones find diferent zones of the device
+
+
+ POST /api/devices/create create new device to the current user
+ POST /api/devices/report/create new report body.params{sensor, _id}
+
+ DELETE /api/devices/:id delete device by id
 
 ```
-Get requests
-```
-
-```
-
 
 ## Authors
 
