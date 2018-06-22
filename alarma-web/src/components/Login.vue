@@ -30,7 +30,7 @@
 </template>
 <script>
 import loginServices from '@/services/login.js'
-import { mapActions } from 'vuex'
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -41,7 +41,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setUser']),
+    ...mapMutations(['setUser']),
     login () {
       loginServices.login({
         email: this.email,

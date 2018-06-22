@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import reportsService from '@/services/reports'
+
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -8,6 +9,7 @@ const store = new Vuex.Store({
   state: {
     user: null,
     devices: [],
+    logged: true,
     reports: [],
     now: new Date(),
     test: true
@@ -18,6 +20,17 @@ const store = new Vuex.Store({
     // addReports (state, payload) {
     //   state.reports.splice(0, 0, payload)
     // },
+    logout (state) {
+      state.user = null
+      state.logged = false
+      state.devices = []
+      state.reports = []
+      window.localStorage.clear()
+    },
+    setUser (state) {
+      state.logged = true
+      state.user = JSON.parse(window.localStorage.user).user
+    },
     setReports (state, payload) {
       state.reports = payload
     },
@@ -32,14 +45,8 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    setUser (context) {
-      this.user = JSON.parse(window.localStorage.user).user
-    },
     logout (context) {
-      this.user = null
-      this.devices = []
-      this.reports = []
-      window.localStorage.clear()
+      return context.commit('logout')
     },
     getReports (context) {
       const _id = this.user.devices[0]
