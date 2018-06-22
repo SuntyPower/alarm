@@ -14,9 +14,9 @@ Todos los comandos disponibles de la API
 
 Device api calls
 
-  ```
+  <code>
 GET /api/devices  
-  ```
+  </code>
 find all devices from the current user
 ```
 GET /api/devices/:id
