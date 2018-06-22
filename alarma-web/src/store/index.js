@@ -6,11 +6,13 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   // variables globales
   state: {
-    reports: [],
+    user: null,
     devices: [],
+    reports: [],
     now: new Date(),
     test: true
   },
+
   // funciones
   mutations: {
     // addReports (state, payload) {
@@ -30,14 +32,22 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    setUser (context) {
+      this.user = JSON.parse(window.localStorage.user).user
+    },
+    logout (context) {
+      this.user = null
+      this.devices = []
+      this.reports = []
+      window.localStorage.clear()
+    },
     getReports (context) {
-        const user = JSON.parse(window.localStorage.user).user
-        const _id = user.devices[0]
-        console.log(user)
-        return reportsService.search(_id)
-        .then((res) => {
-          context.commit('setReports', res.reports)
-        })
+      const _id = this.user.devices[0]
+      console.log(this.user)
+      return reportsService.search(_id)
+      .then((res) => {
+        context.commit('setReports', res.reports)
+      })
     }
   }
 })

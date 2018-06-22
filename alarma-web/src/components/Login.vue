@@ -30,6 +30,7 @@
 </template>
 <script>
 import loginServices from '@/services/login.js'
+import { mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -40,6 +41,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setUser']),
     login () {
       loginServices.login({
         email: this.email,
@@ -50,7 +52,7 @@ export default {
           this.sucess = true
           window.localStorage.token = res.token
           window.localStorage.user = window.atob(res.token.split('.')[1])
-
+          this.setUser()
           this.$router.push('/reports')
         })
     }

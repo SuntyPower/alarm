@@ -13,11 +13,13 @@
       #navbarMenuHeroA.navbar-menu
         .navbar-end
             router-link.navbar-item.router-link-exact-active(to="/login", tag="a")
-              | Login
+              p Login
             router-link.navbar-item.router-link-exact-active(to="/register", tag="a")
-              | Registrarse
+              p Registrarse
             router-link.navbar-item.router-link-exact-active(to="/profile", tag="a")
-              | Perfil
+              p Perfil
+            router-link.navbar-item.router-link-exact-active(to="/", tag="a", v-show="", v-on:click.native="logout")
+              p Logout
   section.hero.is-primary.is-small
     // Hero content: will be in the middle
     .hero-body
@@ -45,14 +47,17 @@
 
 </template>
 <script>
-  import {mapMutations} from 'vuex'
+  import { mapMutations, mapActions } from 'vuex'
   export default {
     created () {
      setInterval(() => {
        this.updateTime()
      }, 5000)
     },
-    methods: mapMutations(['updateTime'])
+    methods: {
+      ...mapMutations(['updateTime']),
+      ...mapActions(['logout'])
+    }
   }
 </script>
 <style lang="scss">

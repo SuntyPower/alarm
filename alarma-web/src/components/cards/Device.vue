@@ -1,6 +1,4 @@
 <template lang="pug">
-    
-    .container
       .columns
         .column.is-one-quarter(v-for="d in user.devices")
           .card
@@ -19,7 +17,9 @@
                 p ID dispositivo: {{d}}
                 router-link.navbar-item.router-link-exact-active(to="/reports", tag="a") #Historial Reportes
                 router-link.navbar-item.router-link-exact-active(to="/profile", tag="a") #Modificar
-          
+                .field
+                  input#switchRoundedDefault.switch.is-rounded(type='checkbox', name='switchRoundedDefault', v-model='checked')
+                  label( for='switchRoundedDefault') {{checked ? 'ALARMA ACTIVADA' : 'ALARMA DESACTIVADA' }}
 
 </template>
 
@@ -27,14 +27,28 @@
 export default {
   data () {
     return {
-      user: null
+      user: null,
+      checked: false
     }
   },
   created () {
     this.user = JSON.parse(window.localStorage.user).user
+  },
+  methods: {
+    switch () {
+      if (this.checked) {
+        this.checked = false
+        } else {
+        this.checked = true
+        }
+    }
+  },
+  computed: {
+
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 </style>
