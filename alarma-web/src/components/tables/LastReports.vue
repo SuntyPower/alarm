@@ -24,9 +24,8 @@
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.type | toUpperCase}}
 </template>
 <script>
-// import reportsService from '../../services/reports.js'
 import notifiactionReport from '@/components/cards/Report.vue'
-import { mapGetters, mapMutations, mapActions, mapState } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 export default {
   components: {
     notifiactionReport
@@ -50,7 +49,7 @@ export default {
     }
   },
   created () {
-    this.getReports()
+
   },
   computed: {
     ...mapState(['now']),
@@ -84,11 +83,10 @@ export default {
       } else return 'SIN MOVIMIENTO'
     }
   },
-    methods: {
-      ...mapActions(['getReports']),
-      ...mapMutations(['addReports'])
-    }
+  methods: {
+    ...mapMutations(['addReports'], ['setReports'])
   }
+}
 
 </script>
 

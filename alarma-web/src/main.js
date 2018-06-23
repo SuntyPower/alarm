@@ -23,7 +23,8 @@ const router = new VueRouter({
   routes,
   mode: 'history',
   linkActiveClass: 'is-active', // active class for non-exact links.
-  linkExactActiveClass: 'is-active' // active class for *exact* links.
+  linkExactActiveClass: 'is-active', // active class for *exact* links.
+  linkExactDesactiveClass: 'is-desactive' // desactive class for exact links
 })
 const isAuthenticated = function () {
   return window.localStorage.token

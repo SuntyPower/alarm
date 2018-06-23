@@ -6,23 +6,23 @@
       .field
         .label Nombre *
         .control
-          input.input(type="text" placeholder="Nombre" v-model="firstName" )
+          input.input(type="text" placeholder="Nombre" v-model="firstName", @keyup.enter='checkForm')
       .field
         .label Apellido *
         .control
-          input.input(type="text" placeholder="Apellido" v-model="lastName")
+          input.input(type="text" placeholder="Apellido" v-model="lastName", @keyup.enter='checkForm')
       .field
         .label email *
         .control
-          input.input(type="email" placeholder="email" v-model="email")
+          input.input(type="email" placeholder="email" v-model="email", @keyup.enter='checkForm')
       .field
         .label Contraseña *
         .control
-          input.input(type="password" placeholder="contraseña" v-model="password")
+          input.input(type="password" placeholder="contraseña" v-model="password", @keyup.enter='checkForm')
       .field
         .label Confirme su contraseña *
         .control
-          input.input(type="password" placeholder="confirmar contraseña" v-model="confirmPassword")
+          input.input(type="password" placeholder="confirmar contraseña" v-model="confirmPassword", @keyup.enter='checkForm')
       button.button.is-primary(@click="checkForm") Registrarse
     .container(v-show="sucess")
         | Guardado con exito {{token}}

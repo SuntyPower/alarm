@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import reportsService from '@/services/reports'
 export default {
   data () {
     return {
@@ -33,6 +34,13 @@ export default {
   },
   created () {
     this.user = JSON.parse(window.localStorage.user).user
+  },
+  mounted () {
+    reportsService.search(this.user.devices[0]._id)
+      .then(res => {
+        console.log(res.reports)
+        this.$store.commit('setReports', res.reports)
+      })
   },
   methods: {
     switch () {

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import reportsService from '@/services/reports'
 
 Vue.use(Vuex)
 
@@ -48,14 +47,10 @@ const store = new Vuex.Store({
     logout (context) {
       return context.commit('logout')
     },
-    getReports (context) {
-      const _id = this.user.devices[0]
-      console.log(this.user)
-      return reportsService.search(_id)
-      .then((res) => {
-        context.commit('setReports', res.reports)
-      })
+    setReports (context, _id) {
+      return context.commit('logout', _id)
     }
+
   }
 })
 

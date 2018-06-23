@@ -18,7 +18,7 @@
               p Registrarse
             router-link.navbar-item.router-link-exact-active(to="/profile", tag="a", v-show="$store.state.logged")
               p Perfil
-            router-link.navbar-item.router-link-exact-active(to="/", tag="a",v-show="$store.state.logged", v-on:click.native="logout")
+            router-link.navbar-item.router-link-exact-desactive(to="/index", tag="a",v-show="$store.state.logged", v-on:click.native="logout")
               p Logout
   section.hero.is-primary.is-small
     // Hero content: will be in the middle

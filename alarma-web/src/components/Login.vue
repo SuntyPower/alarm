@@ -1,3 +1,4 @@
+
 <template lang="pug">
   section.hero.is-success.is-fullheight
         .hero-body
@@ -10,15 +11,15 @@
                   img(src='https://placehold.it/128x128')
                   .field
                     .control
-                      input.input.is-large(type='text', placeholder='Email', v-model="email")
+                      input.input.is-large(type='text', placeholder='Email', v-model="email", @keyup.enter='login')
                   .field
                     .control
-                      input.input.is-large(type='password', placeholder='Su Contraseña', v-model="password")
+                      input.input.is-large(type='password', placeholder='Su Contraseña', v-model="password", @keyup.enter='login')
                   .field
                     label.checkbox
                       input(type='checkbox')
                       |                   Recuerdame
-                  button.button.is-primary(v-on:click="login") Login
+                  button.button.is-primary(v-on:click='login') Login
               //- p.has-text-grey
               //-   a(href='/') Registrarse
               //-   |   · 
@@ -48,12 +49,13 @@ export default {
         password: this.password
       })
         .then(res => {
+          console.log(res.status)
           this.message = res
           this.sucess = true
           window.localStorage.token = res.token
           window.localStorage.user = window.atob(res.token.split('.')[1])
           this.setUser()
-          this.$router.push('/reports')
+          this.$router.push('/devices')
         })
     }
   }
