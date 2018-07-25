@@ -29,6 +29,7 @@
 </template>
 <script>
 import registerService from '@/services/register.js'
+import * as EmailValidator from 'email-validator';
 
 export default {
   name: 'register',
@@ -51,9 +52,15 @@ export default {
       if (!this.firstName || !this.lastName || !this.email || !this.password || !this.confirmPassword) {
         this.errors.push('Debe completar todos los campos obligatorios (*)')
       }
+
+      if (EmailValidator.validate(this.email) === false) {
+        this.errors.push('Debe ingresar un email por ejemplo ejemplo@ejemplo.com')
+      }
+
       if (this.password !== this.confirmPassword) {
         this.errors.push('Las contraseñas no son iguales')
       }
+
       if (this.errors.length === 0) {
         this.postRegister()
       }

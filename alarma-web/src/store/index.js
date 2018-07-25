@@ -1,7 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import reportsService from '@/services/reports'
 
 Vue.use(Vuex)
+
+// get user from localStorage
+const plugin = store => {
+  if (!store.logged && window.localStorage.user) {
+    store.commit('setUser')
+    store.dispatch('setDevices')
+  } else {
+    store.commit('logout')
+    //this.$router.push('/logout')
+  }
+}
 
 const store = new Vuex.Store({
   // variables globales
@@ -9,16 +21,12 @@ const store = new Vuex.Store({
     user: null,
     devices: [],
     logged: true,
-    reports: [],
     now: new Date(),
     test: true
   },
 
   // funciones
   mutations: {
-    // addReports (state, payload) {
-    //   state.reports.splice(0, 0, payload)
-    // },
     logout (state) {
       state.user = null
       state.logged = false
@@ -28,10 +36,16 @@ const store = new Vuex.Store({
     },
     setUser (state) {
       state.logged = true
-      state.user = JSON.parse(window.localStorage.user).user
+      const user = JSON.parse(window.localStorage.user).user
+      state.user = {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      }
     },
-    setReports (state, payload) {
-      state.reports = payload
+    setDevices (state, payload) {
+      state.devices = payload
     },
     updateTime (state) {
       state.now = new Date()
@@ -39,19 +53,34 @@ const store = new Vuex.Store({
   },
 
   getters: {
-    getLastReports (state) {
-      return state.reports.slice(0, 5)
-    }
   },
+
   actions: {
     logout (context) {
       return context.commit('logout')
     },
-    setReports (context, _id) {
-      return context.commit('logout', _id)
-    }
+    setDevices (context) {
+      console.log('set all devices and reports')
+      const devices = JSON.parse(window.localStorage.user).user.devices
+      let payload = []
 
-  }
+      devices.forEach(d => {
+        reportsService.search(d)
+          .then(res => {
+            console.log(res)
+            payload.push({
+              _id: res._id,
+              reports: res.reports,
+              version: res.version,
+              state: res.state
+            })
+
+          })
+      })
+      return context.commit('setDevices', payload)
+    }
+  },
+  plugins: [plugin]
 })
 
 

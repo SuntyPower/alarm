@@ -7,7 +7,7 @@
 const String ver= "0.0.1";
 const byte n_rows = 4;
 const byte n_cols = 4;
-const String uuid = "2";
+const String uuid = "\"5b4433d290b4540de67991ef\"";
 char keys[n_rows][n_cols] = {
   {'1','2','3','A'},
   {'4','5','6','B'},
@@ -16,7 +16,7 @@ char keys[n_rows][n_cols] = {
 };
 
 byte colPins[n_rows] = {D3, D2, D1, D0};
-byte rowPins[n_cols] = {D8, D7, D6, D5};
+byte rowPins[n_cols] = {D7, D6, D5, D4};
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, n_rows, n_cols);
 
@@ -27,23 +27,23 @@ Password password = Password( "1234" );
 int passwd_pos = 15;
 boolean BUZZER = false; //activar -desactivar bocina
 int alarmStatus = 0;
-int alarmActive = 0;
+int alarmActive = 1;
 //LED pines
 byte redLed = D10;
 byte greenLed = D9;
 //PIR pines
-byte pir1 = D4;
+byte pir1 = 20;
 //puertas pines
-//int puerta1 = D1;
+byte puerta1= D8;
 //ventanas pines
 // int ventana1 = 38;
 // //buzzer pines
  //byte buzzer = D12;
- int counter=0;
+int counter=0;
 
- const char* ssid = "Elliot Anderson";
- const char* pass =  "mr. robot28";
- const char* mqttServer = "192.168.0.12";
+ const char* ssid = "RioTel_ANSELMI";
+ const char* pass =  "rt522575";
+ const char* mqttServer = "192.168.1.107";
  const int mqttPort = 1883;
 
 
@@ -52,7 +52,7 @@ byte pir1 = D4;
 
 void setup() {
 
-  Serial.begin(115200);
+Serial.begin(115200);
 
 WiFi.begin(ssid, pass);
 
@@ -67,10 +67,11 @@ client.setServer(mqttServer, mqttPort);
 client.setCallback(callback);
 
 while (!client.connected()) {
+  delay(50);
     Serial.println("Connecting to MQTT...");
 
   if (client.connect("ESP8266Client")) {
-    Serial.println("se conecto");
+      delay(50);
     Serial.println("connected");
   } else {
 
@@ -97,31 +98,40 @@ while (!client.connected()) {
   //digitalWrite(buzzer, LOW); //sirena
   keypad.setHoldTime(1000);
   keypad.addEventListener(keypadEvent);
-  client.setServer(mqttServer, mqttPort);
-  client.setCallback(callback);
- mqttReport(PIR1,1,"pir");
+
+ motionDetected(true,1,"pir");
+ motionEnded(false,1,"pir");
+
  Serial.println("finish setup");
 
 }
+
  void loop(){
-
-   Serial.println("loop start");
+  Serial.println("loop");
    keypad.getKey();
-   if (alarmActive == 1){
-    Serial.println("alarm Active == 1");
 
-     if(digitalRead(pir1)==HIGH && !PIR1){
-
-       Serial.println("Sensor pir1 detected");
+   if (alarmActive == 1) {
+     if (digitalRead(puerta1)==HIGH && !PUERTA1) {
        alarmTriggered();
-       PIR1=true;
-       mqttReport(PIR1,1,"pir");
-       motionDetected("Sensor pir1");
+       PUERTA1=true;
+       doorOpen("puerta frontal");
+     }
+     if (digitalRead(puerta1)==LOW && PUERTA1){
+      PUERTA1=false;
+      doorClosed("puerta frontal");
      }
 
-     if(digitalRead(pir1)==LOW && PIR1){
-      motionEnded("Sensor Cocina");
+     // PIR
+
+     if (digitalRead(pir1)==HIGH && !PIR1) {
+        alarmTriggered();
+        PIR1=true;
+        motionDetected(true, 1, "pir");
+     }
+
+     if (digitalRead(pir1)==LOW && PIR1){
       PIR1=false;
+      motionEnded(false, 1, "pir");
      }
    }
 }
@@ -136,67 +146,42 @@ void alarmTriggered(){
   alarmStatus = 1;
 }
 
-void mqttReport(bool triggered, int zone, String type) {
-  // String message= "'device': {'uuid': 'uuid','status': 'acive' },'report':{'triggered': 'true','zone': 'Cocina', 'type':'PIR'}"
-  String message ="{\"device\":{\"uuid\": "+uuid +",\"status\": "+alarmStatus+"},\"report\":{\"triggered\": "+triggered+", \"zone\": "+zone+",\"type\": \""+type+"\" }}";
-  char *mss = &message[0u];
-  client.publish("sensor/motion",mss);
+
+void motionEnded(boolean triggered, int type ,String zone) {
+  Serial.print("NO MAS MOVIMIENTO ");
+  Serial.println("EN " + zone);
+  //aca iria Algun tipo de SMS o INTERNET AVISO algo a implementar.
+  mqttReport(triggered, type, zone);
 }
 
-void callback(char* topic, byte* payload, unsigned int length) {
-
-  Serial.print("Message arrived in topic: ");
-  Serial.println(topic);
-
-  Serial.print("Message:");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-
-  Serial.println();
-  Serial.println("-----------------------");
-
-}
-
-
-void motionEnded(String s) {
-  String place = s;
-  Serial.print("NO MAS MOVIMIENTO");
-  Serial.print("EN " + s);
-  delay(2000);
+void motionDetected(boolean triggered, int type ,String zone) {
+  Serial.print("MOVIMIENTO DETECTADO ");
+  Serial.println("EN " + zone);
 
   //aca iria Algun tipo de SMS o INTERNET AVISO algo a implementar.
-  //
-}
+  mqttReport(triggered, type, zone);
 
-void motionDetected(String s) {
-  String place = s;
-
-  Serial.print("MOVIMIENTO DETECTADO");
-  Serial.print("EN " + s);
-  delay(2000);
-  //aca iria Algun tipo de SMS o INTERNET AVISO algo a implementar.
-  //
 
 }
 
 void doorClosed(String s) {
   String place = s;
 
-  Serial.print("SE CERRO");
+  Serial.print("SE CERRO ");
 
-  Serial.print("LA " + s);
+  Serial.println("LA " + s);
   delay(2000);
 
   //aca iria Algun tipo de SMS o INTERNET AVISO algo a implementar.
   //
 }
+
 void doorOpen(String s) {
   String place = s;
 
-  Serial.print("SE ABRIO");
+  Serial.print("SE ABRIO ");
 
-  Serial.print("LA " + s);
+  Serial.println("LA " + s);
   delay(2000);
 
   //aca iria Algun tipo de SMS o INTERNET AVISO algo a implementar.
@@ -205,44 +190,31 @@ void doorOpen(String s) {
 
 
 void activatingAlarmScreen() {
-
   Serial.print("ACTIVANDO ALARMA");
 
   Serial.print("EN: ");
-
-
 }
 
-
-
 void welcomeScreen() {
-
-
   Serial.print("<<  BIENVENIDO A  >>");
 
   Serial.print("<< ANSELMI SYSTEM >>");
 }
 
-
 void manyFailsScreen() {
-
   Serial.print("Muchos intentos");
 
   Serial.print("Espere...   ");
-
 }
 
 void putPassScreen() {
-
   Serial.print("INGRESE PASSWORD");
 
   Serial.print("PASS>");
 }
 
 void validPassScreen() {
-
   Serial.print("Contrasena Correcta!!");
-
 }
 
 void wrongPassScreen() {
@@ -252,7 +224,6 @@ void wrongPassScreen() {
   delay(900);
 }
 
-
 void alarmDetectScreen(String s) {
 
   Serial.print("Movimiento Detect");
@@ -260,10 +231,10 @@ void alarmDetectScreen(String s) {
   delay(2000);
 }
 
-
 void enableSiren() {
 //  digitalWrite(buzzer, HIGH);
   BUZZER = true;
+
 }
 
 void disableSiren() {
@@ -273,12 +244,11 @@ void disableSiren() {
 
 void newPassScreen() {
   Serial.print("Nueva contra");
-
 }
 
 
 void keypadEvent(KeypadEvent eKey) {
-   blink();
+  blink();
 
   switch (keypad.getState()) {
 
@@ -293,25 +263,21 @@ void keypadEvent(KeypadEvent eKey) {
           break;
 
         case '*': //* is to reset password attempt
-
           password.reset();
           passwd_pos = 15;
-
-          // TODO: clear the screen output
-
           break;
 
         default:
           counter++;
           Serial.print(counter);
           password.append(eKey);
-
          }
-}
+       }
      }
 
 void checkPassword() { // To check if PIN is corrected, if not, retry!
   Serial.println("checkPassword");
+
   if (password.evaluate())
   {
     if(alarmActive == 0 && alarmStatus == 0)
@@ -350,12 +316,11 @@ void alarmActivateScreen() {
 }
 
 void desactivate(){
-alarmActive=0;
-alarmStatus=0;
-resetSensors();
-password.reset();
-alarmDesactivateScreen();
-
+  alarmActive=0;
+  alarmStatus=0;
+  resetSensors();
+  password.reset();
+  alarmDesactivateScreen();
 }
 
 void alarmDesactivateScreen() {
@@ -367,9 +332,9 @@ void alarmDesactivateScreen() {
 }
 
 void resetSensors(){
-  //  digitalWrite(buzzer,LOW);
+  digitalWrite(buzzer,LOW);
+  PIR1 = false;
   PUERTA1=false;
-  PIR1=false;
 }
 
 void newPassword(){
@@ -386,4 +351,28 @@ void blink(){
   delay(50);
   digitalWrite(greenLed,HIGH);
 
-  }}
+  }
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+
+  Serial.print("Message arrived in topic: ");
+  Serial.println(topic);
+
+  Serial.print("Message:");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+
+  Serial.println();
+  Serial.println("-----------------------");
+
+}
+
+
+void mqttReport(bool triggered, int zone, String type) {
+  // String message= "'device': {'uuid': 'uuid','status': 'acive' },'report':{'triggered': 'true','zone': 'Cocina', 'type':'PIR'}"
+  String message ="{\"device\":{\"uuid\": "+uuid +",\"status\": "+alarmStatus+"},\"report\":{\"triggered\": "+triggered+", \"zone\": "+zone+",\"type\": \""+type+"\" }}";
+  char *mss = &message[0u];
+  client.publish("sensor/motion",mss);
+}

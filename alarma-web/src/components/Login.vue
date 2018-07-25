@@ -1,8 +1,10 @@
 
 <template lang="pug">
   section.hero.is-success.is-fullheight
-        .hero-body
-          .container.has-text-centered(v-show="!sucess")
+        .container.has-text-centered(v-show="errors")
+          .notification.is-danger(v-for="error in errors") {{error}}
+        .hero-body(v-show="!sucess")
+          .container.has-text-centered
             .column.is-4.is-offset-4
               h3.title.has-text-grey Iniciar Sesión
               p.subtitle.has-text-grey Ingrese su Usuario y Contraseña
@@ -26,10 +28,11 @@
               //-   a(href='/') Olvidaste tu contraseña?
               //-   |   · 
               //-   a(href='/') Ayuda
-        .container(v-show="sucess")
+        .container(v-show="!sucess")
             p  dagad{{message}}
 </template>
 <script>
+import * as EmailValidator from 'email-validator';
 import loginServices from '@/services/login.js'
 import { mapMutations } from 'vuex'
 export default {
@@ -38,26 +41,43 @@ export default {
       email: null,
       password: null,
       sucess: false,
-      message: null
+      message: null,
+      errors: []
     }
   },
+
   methods: {
     ...mapMutations(['setUser']),
+
     login () {
+      this.errors = []
+      if (!this.password || !this.email) {
+        this.errors.push('Debe ingresar un email y una contraseña')
+        return
+      }
+      if (EmailValidator.validate(this.email) === false) {
+        this.errors.push('Debe ingresar un email por ejemplo ejemplo@ejemplo.com')
+        return
+      }
+
       loginServices.login({
         email: this.email,
         password: this.password
       })
         .then(res => {
-          console.log(res.status)
-          this.message = res
-          this.sucess = true
-          window.localStorage.token = res.token
-          window.localStorage.user = window.atob(res.token.split('.')[1])
-          this.setUser()
-          this.$router.push('/devices')
+            this.message = res.message
+            // cambiar luego a que lo maneje un action de vuex
+            window.localStorage.token = res.token
+            window.localStorage.user = window.atob(res.token.split('.')[1])
+            this.setUser()
+            this.$router.push('/devices')
+
+          })
+        .catch(err => {
+          console.log(err)
+          this.errors.push('error al iniciar sesion email y/o contraseña invalidos')
         })
-    }
+      }
   }
 }
 </script>

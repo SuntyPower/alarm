@@ -4,10 +4,11 @@ import Debug from 'debug'
 import Device from '../db-api/device'
 import User from '../db-api/user'
 import Sensor from '../db-api/sensor'
-
+import mqtt from 'mqtt'
+import jwt from 'jsonwebtoken'
 const debug = new Debug('api/routes/device')
 const app = express.Router()
-
+const client = mqtt.connect('mqtt://localhost:1883')
 // GET /api/devices return all devices from the current user
 app.get('/', required, async (req, res) => {
   const _id = req.token.user._id
@@ -24,6 +25,17 @@ app.get('/:id', required, (req, res) => {
     reports: [{i: 2}, {i: 2}]
   }
   res.status(200).json(device)
+})
+
+// GET  to change state of device on arduino
+app.get('/alarmState/:id/:alarmState', required, (req, res) => {
+  res.status(200).json(req.params)
+  //crear token con _id de dispostivo como llave secreta
+  const token = jwt.sign({
+    state: req.params.alarmState
+  }, req.params.id)
+  debug(`el token creado con el id ${token}`)
+  client.publish('set/AlarmState', token)
 })
 
 // GET /api/devices/:id/reports return all reports of device with :id
@@ -72,7 +84,7 @@ app.delete('/:id', required, (req, res) => {
 
 // POST /api/devices/report/create
 
-app.post('/report/create', required, async (req, res) => {
+app.post('/report/create', async (req, res) => {
   const {sensor, _id} = req.body
   const report = await Sensor.create(sensor, _id)
   res.status(201).json({

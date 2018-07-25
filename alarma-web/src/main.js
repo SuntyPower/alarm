@@ -10,7 +10,7 @@ import store from '@/store'
 
 
 // SOCKET
-import VueSocketio from 'vue-socket.io'
+// import VueSocketio from 'vue-socket.io'
 
 // LOCAL STORAGE
 import VueLocalStorage from 'vue-localstorage'
@@ -52,7 +52,7 @@ router.beforeEach((to, from, next) => {
 
 Vue.use(VueRouter)
 Vue.use(VueMoment)
-Vue.use(VueSocketio, 'http://localhost:4000')
+// Vue.use(VueSocketio, 'http://localhost:4000')
 Vue.use(VueLocalStorage)
 
 new Vue({

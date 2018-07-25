@@ -16,7 +16,7 @@
           th.is-info(title="zona del sensor") ZONA
           th.is-info(title="deteccion de movimiento") REPORTE
           th.is-info(title="tipo de sensor") SENSOR
-      tbody(v-for="r in getLastReports")
+      tbody(v-for="r in reports")
         tr
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.createdAt | moment("from", now )}}
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.zone| getZone | toUpperCase}}
@@ -24,6 +24,7 @@
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.type | toUpperCase}}
 </template>
 <script>
+import reportsService from '@/services/reports'
 import notifiactionReport from '@/components/cards/Report.vue'
 import { mapGetters, mapMutations, mapState } from 'vuex'
 export default {
@@ -31,31 +32,21 @@ export default {
     notifiactionReport
   },
   name: 'reports',
+
   data () {
     return {
         alerts: [],
         danger: 'is-danger',
-        okay: 'is-success'
+        okay: 'is-success',
     }
   },
-  sockets: {
-    connect () {
-      console.log('connected')
-      console.log('Se conecto')
-    },
-    report (socket) {
-      this.alerts.push(socket)
-      this.addReports(socket)
-    }
-  },
-  created () {
 
-  },
   computed: {
     ...mapState(['now']),
-    ...mapGetters(['getLastReports'])
+    reports () {
+      return this.$store.state.devices[0].reports
+    }
    },
-
 
   filters: {
     toUpperCase: function (str) {
@@ -83,8 +74,18 @@ export default {
       } else return 'SIN MOVIMIENTO'
     }
   },
+
   methods: {
-    ...mapMutations(['addReports'], ['setReports'])
+    setReports () {
+      const device = this.$store.state.devices[0]
+      reportsService.search(device)
+        .then(res => {
+          this.reports = res.reports
+        })
+        .catch(err => {
+          console.log('err', err)
+        })
+    }
   }
 }
 
