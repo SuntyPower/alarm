@@ -62,11 +62,10 @@ const store = new Vuex.Store({
       console.log('set all devices and reports')
       const devices = JSON.parse(window.localStorage.user).user.devices
       let payload = []
-
       devices.forEach(d => {
         reportsService.search(d)
           .then(res => {
-            console.log(res)
+            console.log('Api res search', res)
             payload.push({
               _id: res._id,
               reports: res.reports,

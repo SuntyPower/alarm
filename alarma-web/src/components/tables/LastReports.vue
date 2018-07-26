@@ -24,7 +24,6 @@
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.type | toUpperCase}}
 </template>
 <script>
-import reportsService from '@/services/reports'
 import notifiactionReport from '@/components/cards/Report.vue'
 import { mapState } from 'vuex'
 export default {
@@ -37,15 +36,16 @@ export default {
     return {
         alerts: [],
         danger: 'is-danger',
-        okay: 'is-success'
+        okay: 'is-success',
+        reports: []
     }
+  },
+  mounted () {
+    this.setReports()
   },
 
   computed: {
-    ...mapState(['now']),
-    reports () {
-      return this.$store.state.devices[1].reports
-    }
+    ...mapState(['now'])
    },
 
   filters: {
@@ -77,18 +77,10 @@ export default {
 
   methods: {
     setReports () {
-      const device = this.$store.state.devices[1]
-      reportsService.search(device)
-        .then(res => {
-          this.reports = res.reports
-        })
-        .catch(err => {
-          console.log('err', err)
-        })
-    }
+      this.reports = this.$store.state.reports
   }
 }
-
+}
 </script>
 
 <style lang="scss" scoped>
