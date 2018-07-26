@@ -10,22 +10,22 @@
         props: {
             disabled: Boolean,
             classes: String,
-            checked: Boolean,
+            checked: Number,
             name: String
         },
-        data() {
+        data () {
             return {
                 value: null
             }
         },
-        beforeMount() {
+        beforeMount () {
             this.value = this.checked
         },
-        mounted() {
+        mounted () {
             this.$emit('input', this.value)
         },
         watch: {
-            value(val) {
+            value (val) {
                 this.$emit('input', val)
             },
             checked (val) {
