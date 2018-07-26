@@ -49,5 +49,18 @@ export default {
   findLastReports: (_id) => {
     debug(`buscando todos los reportes del dispositivo con id: ${_id}`)
     return Device.findById(_id).populate('reports').sort('-createdAt').limit(10)
+  },
+
+  setAlarmState: (_id, state) => {
+    debug(`Actualizando estado ${state} del dispositivo ${_id}`)
+    Device.findById(_id, function (err, device) {
+      if (err) return err
+
+      device.state = state
+      device.save(function (err, updatedState) {
+        if (err) return err
+        return updatedState
+      })
+    })
   }
 }

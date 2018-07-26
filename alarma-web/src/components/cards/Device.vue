@@ -1,6 +1,4 @@
-<template lang="pug">
-  .columns
-    .column.is-one-quarter(v-for="d in devices")
+<template lang="pug" scoped>
       .card
         .card-image
           figure.image.is-4by3
@@ -11,61 +9,56 @@
               figure.image.is-48x48
                 img(src='@/assets/user.png', alt='Placeholder image')
             .media-content
-              p.title.is-4 {{user.firstName}} {{user.lastName}}
-              p.subtitle.is-6 {{user.email}}
+              p.title.is-4 {{firstName}} {{lastName}}
+              p.subtitle.is-6 {{email}}
           .content
-            p ID dispositivo: {{d._id}}
+            p ID dispositivo: {{_id}}
             router-link.navbar-item.router-link-exact-active(to="/reports", tag="a") #Historial Reportes
             router-link.navbar-item.router-link-exact-active(to="/profile", tag="a") #Modificar
             .field
-              input#switchRoundedDefault.switch.is-rounded(type='checkbox', name='switchRoundedDefault', v-model='checked', @click='switched')
-              label( for='switchRoundedDefault') {{checked ? 'ALARMA ACTIVADA' : 'ALARMA DESACTIVADA' }}
+              app-switch(classes='is-warning', v-model='value', :checked='state') {{text}}
 
 </template>
 
 <script>
-import mapState from 'vuex'
+import Switch from '@/components/utils/Switch'
 import reportsService from '@/services/reports'
 export default {
+  name: 'devices-card',
+  components: {
+   'app-switch': Switch
+ },
+  props: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    _id: '',
+    state: '',
+    reports: null
+  },
   data () {
     return {
-      checked : false
+    value: false,
+    text: 'Enabled!'
     }
-  },
-
-  computed: {
-    devices () {
-      return this.$store.state.devices
-    },
-    user () {
-      return this.$store.state.user
-    }
-
   },
   created () {
-    this.checked = false
-    // pedir al dispositivo el estado del mismo...
-    // reportsService.getAlarmState()
+    this.value = this.state
+  },
+  watch: {
+    value (val) {
+      this.switched(this._id, val)
+      this.text = val ? 'ALARMA ACTIVADA' : 'ALARMA DESACTIVADA'
+    }
   },
   methods: {
-     switched () {
-      if (this.checked) {
-        this.checked = false
-        console.log('hola')
-        reportsService.setAlarmState(this.devices[0], this.checked)
-          .then(res => console.log(res))
-          .catch(err => console.log(err))
-        } else {
-        this.checked = true
-        reportsService.setAlarmState(this.devices[0], this.checked)
-          .then(res => console.log(res))
-          .catch(err => console.log(err))
-        }
+     switched (_id, val) {
+        reportsService.setAlarmState(_id, Number(val))
+          .then(res => console.log('Api response: ',res))
+          .catch(err => console.log('Api error',err))
+      }
     }
   }
-}
 </script>
-
 <style lang="scss" scoped>
-
 </style>

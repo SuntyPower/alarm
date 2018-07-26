@@ -28,14 +28,19 @@ app.get('/:id', required, (req, res) => {
 })
 
 // GET  to change state of device on arduino
-app.get('/alarmState/:id/:alarmState', required, (req, res) => {
-  res.status(200).json(req.params)
-  //crear token con _id de dispostivo como llave secreta
+app.get('/alarmState/:id/:alarmState', required, async (req, res) => {
+  // crear token con _id de dispostivo como llave secreta
+  const device = await Device.setAlarmState(req.params.id, req.params.alarmState)
+  debug(`el device actualizado es: \n ${device}`)
+
   const token = jwt.sign({
     state: req.params.alarmState
   }, req.params.id)
   debug(`el token creado con el id ${token}`)
   client.publish('set/AlarmState', token)
+  res.status(200).json({
+    message: 'Estado de dispostivo actualizado'
+  })
 })
 
 // GET /api/devices/:id/reports return all reports of device with :id
@@ -62,7 +67,7 @@ app.get('/:id/zones', required, (req, res) => {
 })
 
 // POST /api/devices/create
-app.post('/create', required, async (req, res) => {
+app.post('/create', async (req, res) => {
   const _id = req.token.user._id
   debug(`/create device asociado a usuario email ${_id}`)
   const device = await Device.create(_id)

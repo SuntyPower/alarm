@@ -26,7 +26,7 @@
 <script>
 import reportsService from '@/services/reports'
 import notifiactionReport from '@/components/cards/Report.vue'
-import { mapGetters, mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 export default {
   components: {
     notifiactionReport
@@ -37,14 +37,14 @@ export default {
     return {
         alerts: [],
         danger: 'is-danger',
-        okay: 'is-success',
+        okay: 'is-success'
     }
   },
 
   computed: {
     ...mapState(['now']),
     reports () {
-      return this.$store.state.devices[0].reports
+      return this.$store.state.devices[1].reports
     }
    },
 
@@ -77,7 +77,7 @@ export default {
 
   methods: {
     setReports () {
-      const device = this.$store.state.devices[0]
+      const device = this.$store.state.devices[1]
       reportsService.search(device)
         .then(res => {
           this.reports = res.reports

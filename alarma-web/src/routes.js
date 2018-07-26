@@ -1,8 +1,8 @@
-import Login from '@/components/Login.vue'
+import Login from '@/components/forms/Login.vue'
 import LastReports from '@/components/tables/LastReports.vue'
 import Register from '@/components/forms/Register.vue'
 import Profile from '@/components/Profile.vue'
-import Device from '@/components/cards/Device.vue'
+import Device from '@/components/Device.vue'
 const routes = [
   {
     path: '/login',

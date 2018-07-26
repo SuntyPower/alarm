@@ -11,7 +11,6 @@ const plugin = store => {
     store.dispatch('setDevices')
   } else {
     store.commit('logout')
-    //this.$router.push('/logout')
   }
 }
 
@@ -74,7 +73,6 @@ const store = new Vuex.Store({
               version: res.version,
               state: res.state
             })
-
           })
       })
       return context.commit('setDevices', payload)

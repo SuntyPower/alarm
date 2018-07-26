@@ -1,13 +1,13 @@
 
 <template lang="pug">
   section.hero.is-success.is-fullheight
-        .container.has-text-centered(v-show="errors")
-          .notification.is-danger(v-for="error in errors") {{error}}
         .hero-body(v-show="!sucess")
           .container.has-text-centered
             .column.is-4.is-offset-4
               h3.title.has-text-grey Iniciar Sesión
               p.subtitle.has-text-grey Ingrese su Usuario y Contraseña
+              .notification.is-danger(v-for="error in errors") {{error}}
+
               .box
                 figure.avatar
                   img(src='https://placehold.it/128x128')
@@ -21,18 +21,15 @@
                     label.checkbox
                       input(type='checkbox')
                       |                   Recuerdame
-                  button.button.is-primary(v-on:click='login') Login
-              //- p.has-text-grey
-              //-   a(href='/') Registrarse
-              //-   |   · 
-              //-   a(href='/') Olvidaste tu contraseña?
-              //-   |   · 
-              //-   a(href='/') Ayuda
-        .container(v-show="!sucess")
-            p  dagad{{message}}
+                  button.button.is-primary.is-large(v-on:click='login') Login
+              p.has-text-grey
+                router-link(to="/register", tag="a", v-show="!$store.state.logged") Registrarse
+                  |   · 
+                router-link(to="/login", tag="a",v-show="!$store.state.logged")
+                  |  Olvidaste tu contraseña?
 </template>
 <script>
-import * as EmailValidator from 'email-validator';
+import * as EmailValidator from 'email-validator'
 import loginServices from '@/services/login.js'
 import { mapMutations } from 'vuex'
 export default {
@@ -56,7 +53,7 @@ export default {
         return
       }
       if (EmailValidator.validate(this.email) === false) {
-        this.errors.push('Debe ingresar un email por ejemplo ejemplo@ejemplo.com')
+        this.errors.push('Debe ingresar un email válido ejemplo@ejemplo.com')
         return
       }
 
@@ -70,8 +67,8 @@ export default {
             window.localStorage.token = res.token
             window.localStorage.user = window.atob(res.token.split('.')[1])
             this.setUser()
+            this.$store.dispatch('setDevices')
             this.$router.push('/devices')
-
           })
         .catch(err => {
           console.log(err)
