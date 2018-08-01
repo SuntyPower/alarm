@@ -12,6 +12,5 @@ reportsService.setAlarmState = function (_id, alarmState) {
   console.log('Device id:', _id, 'Alarm State: ', alarmState)
   return apiService.get(`/devices/alarmState/${_id}/${alarmState}`)
   .then(res => res.data)
-    
 }
 export default reportsService

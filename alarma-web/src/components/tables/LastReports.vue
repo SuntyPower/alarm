@@ -1,4 +1,4 @@
-
+  
 <template lang="pug">
 #reports
   .container
@@ -24,6 +24,7 @@
           td(v-bind:class="[ r.triggered ? danger : '', okay]") {{r.type | toUpperCase}}
 </template>
 <script>
+import reportsService from '@/services/reports'
 import notifiactionReport from '@/components/cards/Report.vue'
 import { mapState } from 'vuex'
 export default {
@@ -37,17 +38,16 @@ export default {
         alerts: [],
         danger: 'is-danger',
         okay: 'is-success',
-        reports: []
+        reports: [],
+        _id: ''
     }
   },
-  mounted () {
-    this.setReports()
-  },
-
   computed: {
     ...mapState(['now'])
    },
-
+  created () {
+    this.setReports(this.currentDevice)
+  },
   filters: {
     toUpperCase: function (str) {
       return str.toUpperCase()
@@ -76,8 +76,12 @@ export default {
   },
 
   methods: {
-    setReports () {
-      this.reports = this.$store.state.reports
+    setReports (_id) {
+      reportsService.search(this.$store.state.currentDevice)
+        .then(res => {
+          console.log('reportes:', res.reports)
+          this.reports = res.reports
+          })
   }
 }
 }

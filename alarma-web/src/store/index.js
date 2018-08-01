@@ -19,6 +19,7 @@ const store = new Vuex.Store({
   state: {
     user: null,
     devices: [],
+    currentDevice: '',
     logged: true,
     now: new Date(),
     test: true
@@ -42,6 +43,9 @@ const store = new Vuex.Store({
         lastName: user.lastName,
         email: user.email
       }
+    },
+    setCurrentDevice (state, _id) {
+      state.currentDevice = _id
     },
     setDevices (state, payload) {
       state.devices = payload

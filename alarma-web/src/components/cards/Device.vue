@@ -1,5 +1,5 @@
 <template lang="pug" scoped>
-      .card
+      .card(@mouseover="setCurrentDevice")
         .card-image
           figure.image.is-4by3
             img(src='@/assets/casa-principal.jpg', alt='Placeholder image')
@@ -13,7 +13,7 @@
               p.subtitle.is-6 {{email}}
           .content
             p ID dispositivo: {{_id}}
-            router-link.navbar-item.router-link-exact-active(to="/reports", tag="a") #Historial Reportes
+            router-link.navbar-item.router-link-exact-active(to="/reports", tag="a") #Historial de reportes
             router-link.navbar-item.router-link-exact-active(to="/profile", tag="a") #Modificar
             .field
               app-switch(classes='is-warning', v-model='value', :checked='state') {{text}}
@@ -54,8 +54,13 @@ export default {
   methods: {
      switched (_id, val) {
         reportsService.setAlarmState(_id, Number(val))
-          .then(res => console.log('Api response: ',res))
-          .catch(err => console.log('Api error',err))
+          .then(res => console.log('Api response: ', res))
+          .catch(err => console.log('Api error', err))
+      },
+      setCurrentDevice () {
+        if (this._id !== this.$store.state.currentDevice) {
+          this.$store.commit('setCurrentDevice', this._id)
+          }
       }
     }
   }

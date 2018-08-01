@@ -7,8 +7,9 @@ import routes from '@/routes'
 
 import store from '@/store'
 
+// PLUGINS
 
-
+import EventBus from '@/plugins/event-bus'
 // SOCKET
 // import VueSocketio from 'vue-socket.io'
 
@@ -54,6 +55,7 @@ Vue.use(VueRouter)
 Vue.use(VueMoment)
 // Vue.use(VueSocketio, 'http://localhost:4000')
 Vue.use(VueLocalStorage)
+Vue.use(EventBus)
 
 new Vue({
   el: '#app',
