@@ -21,6 +21,10 @@ const createToken = function (user) {
 app.get('/users', async (req, res) => {
   debug(`devolviendo usuarios`)
   const users = await User.getUsers()
+    .catch((err) => {
+      debug(`error al devolover usuarios ${err}`)
+      return handleBadRequest(res, err.message)
+    })
   res.status(200).json({
     message: 'users',
     users
@@ -106,6 +110,13 @@ function handleLoginFailed (res, message) {
   return res.status(401).json({
     message: 'Login failed',
     error: message || 'Email and password don\'t match'
+  })
+}
+
+function handleBadRequest (res, message) {
+  return res.status(400).json({
+    message: 'Bad Request',
+    error: message || 'bad request'
   })
 }
 
